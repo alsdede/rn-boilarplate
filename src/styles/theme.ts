@@ -3,8 +3,6 @@ export default {
     radius: '0.4rem',
   },
   font: {
-    family:
-      "Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif",
     light: 300,
     normal: 400,
     bold: 600,

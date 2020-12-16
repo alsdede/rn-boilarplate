@@ -1,14 +1,10 @@
-import { PixelRatio, Dimensions } from 'react-native';
+import { Dimensions, PixelRatio } from 'react-native';
 
-const ratio = PixelRatio.get();
+const { width: SCREEN_WIDTH } = Dimensions.get('window');
 
-interface NormalizeProps {
-  size: number;
+const scale = SCREEN_WIDTH / 360;
+
+export function normalize(size) {
+  const newSize = size * scale;
+  return Math.round(PixelRatio.roundToNearestPixel(newSize)) - 2;
 }
-const normalize = ({ size }: NormalizeProps) => {
-  const { width, height } = Dimensions.get('window');
-
-  return size;
-};
-
-export default normalize;
