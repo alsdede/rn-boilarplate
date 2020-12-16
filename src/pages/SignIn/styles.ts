@@ -4,4 +4,6 @@ export const Container = styled.View`
   flex: 1;
 `;
 
-export const Title = styled.Text``;
+export const Title = styled.Text`
+  color: red;
+`;
