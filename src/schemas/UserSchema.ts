@@ -3,7 +3,7 @@ export default class UserSchema {
     name: 'User',
     primaryKey: 'id',
     properties: {
-      id: { type: 'int', indexed: true },
+      id: { type: 'string', indexed: true },
       name: 'string',
       password: 'string',
     },

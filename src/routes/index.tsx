@@ -1,19 +1,26 @@
 import React from 'react';
-import { createStackNavigator } from '@react-navigation/stack';
+import {
+  NavigationContainer,
+  NavigationContainerRef,
+} from '@react-navigation/native';
 
-import Sign from '../pages/Sign';
+import AuthRoutes from './auth';
+import AppRoutes from './app';
 
-const Auth = createStackNavigator();
+import { useAuth } from '../hooks/auth';
 
-const AuthRoutes: React.FC = () => (
-  <Auth.Navigator
-    screenOptions={{
-      headerShown: false,
-      cardStyle: { backgroundColor: '#000' },
-    }}
-  >
-    <Auth.Screen name="Sign" component={Sign} />
-  </Auth.Navigator>
-);
+export const navigationRef = React.createRef<NavigationContainerRef>();
 
-export default AuthRoutes;
+const Routes: React.FC = () => {
+  const { loading } = useAuth();
+
+  console.info(`Routes: rendering;  is []; is loading state: `);
+
+  return (
+    <NavigationContainer ref={navigationRef}>
+      {false ? <AppRoutes /> : <AuthRoutes />}
+    </NavigationContainer>
+  );
+};
+
+export default Routes;
