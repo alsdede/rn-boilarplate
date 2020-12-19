@@ -5,7 +5,7 @@ import React, {
   useContext,
   useEffect,
 } from 'react';
-
+import { ObjectType } from 'realm';
 import getRealmApp from '../service/realm';
 
 interface User {
@@ -15,17 +15,19 @@ interface User {
 }
 
 interface AuthState {
-  token: string;
-  user: User;
+  token: boolean;
+  user: ObjectType;
 }
 
 interface SignInCredentials {
+  id: string;
   name: string;
   password: string;
 }
 
 interface AuthContextData {
-  user: User;
+  token: boolean;
+  user: ObjectType;
   loading: boolean;
   signIn(credentials: SignInCredentials): Promise<void>;
   signOut(): void;
@@ -37,23 +39,22 @@ const AuthProvider: React.FC = ({ children }) => {
   const [data, setData] = useState<AuthState>({} as AuthState);
   const [teste, setTeste] = useState([]);
   const [loading, setLoading] = useState(true);
-  console.log('TESTE', teste);
 
   useEffect(() => {
     async function loadStoredData(): Promise<void> {}
   }, []);
 
   const signIn = useCallback(async ({ name, password }) => {
-    console.log('name', name);
-    console.log('pass', password);
     const realm = await getRealmApp();
-    const data = await realm
+    const data = realm
       .objects('User')
       .filtered('name == $0 && password== $1', name, password);
     if (Object.keys(data).length === 1) {
+      const token = false;
+      const user = data;
+      setData({ token, user });
     }
     console.log('SIGN DATA ===========>', data);
-    setTeste(data);
   }, []);
 
   const signOut = useCallback(async () => {
@@ -62,7 +63,7 @@ const AuthProvider: React.FC = ({ children }) => {
 
   return (
     <AuthContext.Provider
-      value={{ user: data.user, signIn, signOut, loading, teste }}
+      value={{ user: data.user, signIn, signOut, loading, token: data.token }}
     >
       {children}
     </AuthContext.Provider>

@@ -23,8 +23,8 @@ const Sign: React.FC = () => {
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
-  const { signIn, teste } = useAuth();
-  console.log('TESTE MMMMM', teste);
+  const { signIn, token } = useAuth();
+  console.log('TESTE MMMMM', token);
   async function handleCreateUser() {
     const realm = await getRealmApp();
     // await signIn({ name: 'MALU', password: '123456' });
@@ -81,17 +81,7 @@ const Sign: React.FC = () => {
       >
         ADD USER
       </Button>
-      <FlatList
-        keyboardShouldPersistTaps="handled"
-        data={teste}
-        keyExtractor={item => item.id}
-        renderItem={({ item }) => (
-          <>
-            <Text style={{ color: 'yellow' }}>{item.name}</Text>
-            <Text style={{ color: 'yellow' }}>{item.password}</Text>
-          </>
-        )}
-      />
+      <Text style={{ color: 'yellow' }}>{String(token)}</Text>
       <FlatList
         keyboardShouldPersistTaps="handled"
         data={users}
