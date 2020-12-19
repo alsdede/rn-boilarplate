@@ -5,18 +5,18 @@ import React, {
   useContext,
   useEffect,
 } from 'react';
-import { ObjectType } from 'realm';
+import { Results } from 'realm';
 import getRealmApp from '../service/realm';
 
-interface User {
+type User = {
   id: string;
   name: string;
   password: string;
-}
+};
 
 interface AuthState {
   token: boolean;
-  user: ObjectType;
+  user: User;
 }
 
 interface SignInCredentials {
@@ -27,7 +27,7 @@ interface SignInCredentials {
 
 interface AuthContextData {
   token: boolean;
-  user: ObjectType;
+  user: User;
   loading: boolean;
   signIn(credentials: SignInCredentials): Promise<void>;
   signOut(): void;
@@ -47,10 +47,10 @@ const AuthProvider: React.FC = ({ children }) => {
   const signIn = useCallback(async ({ name, password }) => {
     const realm = await getRealmApp();
     const data = realm
-      .objects('User')
+      .objects<User>('User')
       .filtered('name == $0 && password== $1', name, password);
     if (Object.keys(data).length === 1) {
-      const token = false;
+      const token = true;
       const user = data;
       setData({ token, user });
     }

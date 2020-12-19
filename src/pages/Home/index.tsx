@@ -7,6 +7,7 @@ import getRealmApp from '../../service/realm';
 
 import { useAuth } from '../../hooks/auth';
 // components
+import CustomHeader from '../../components/CustomHeader';
 import Logo from '../../components/Logo';
 import Button from '../../components/Button';
 import Modal from '../../components/Modal';
@@ -17,7 +18,7 @@ import * as S from './styles';
 const Home: React.FC = () => {
   return (
     <S.Container>
-      <Text>HOME</Text>
+      <CustomHeader />
     </S.Container>
   );
 };
