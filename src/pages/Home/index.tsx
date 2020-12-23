@@ -62,10 +62,10 @@ const ChannelItem = ({ item }) => {
 
 const Home: React.FC = () => {
   const [channels, setChannels] = useState();
-  const [searchParam, setSearchParam] = useState('a');
-  const fetchData = () => {
+  const [searchParam, setSearchParam] = useState('');
+  const fetchData = param => {
     fetch(
-      `https://www.googleapis.com/youtube/v3/search?part=snippet&maxResults=10&q=${searchParam}&type=video&key=AIzaSyDYhkF6zlZDYLJvp89QnzjxBmmfQEoNMo8`,
+      `https://www.googleapis.com/youtube/v3/search?part=snippet&maxResults=10&q=${param}&type=video&key=AIzaSyDYhkF6zlZDYLJvp89QnzjxBmmfQEoNMo8`,
     )
       .then(res => res.json())
       .then(data => {
@@ -73,9 +73,12 @@ const Home: React.FC = () => {
       });
   };
   useEffect(() => {
-    fetchData();
+    fetchData(searchParam);
   }, []);
 
+  const handleSearchChannel = () => {
+    fetchData(searchParam);
+  };
   console.log('RETURN CHANEL==>', channels);
   return (
     <>
@@ -85,12 +88,15 @@ const Home: React.FC = () => {
           <S.SearchInput
             placeholder="Channels"
             placeholderTextColor="#AFAFAF"
+            value={searchParam}
+            onChangeText={text => setSearchParam(text)}
           />
-          <S.SearchButton>
+          <S.SearchButton onPress={handleSearchChannel}>
             <SearchIcon />
           </S.SearchButton>
         </S.SearchWrapper>
         <FlatList
+          showsVerticalScrollIndicator={false}
           data={channels}
           keyExtractor={item => String(item.id.videoId)}
           renderItem={({ item }) => <ChannelItem item={item} />}
