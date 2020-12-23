@@ -35,6 +35,8 @@ const mock = [
 ];
 
 const ChannelItem = ({ item }) => {
+  const handleAddOrRemove = () => {};
+
   return (
     <S.ChannelContainer>
       <S.ChannelLeft>
