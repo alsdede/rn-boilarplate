@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { v4 as uuidv4 } from 'uuid';
 // service
 import axios from 'axios';
@@ -15,27 +15,32 @@ import StarIcon from '../../components/_icons/StarIcon';
 import * as S from './styles';
 import CloseIcon from '../../components/_icons/CloseIcon';
 
-const mock = [
-  {
-    id: 1,
-    title: 'Channel 1',
-  },
-  {
-    id: 2,
-    title: 'Channel 2',
-  },
-  {
-    id: 3,
-    title: 'Channel 3',
-  },
-  {
-    id: 4,
-    title: 'Channel 4',
-  },
-];
+const ChannelItem = ({ item, favoriteList }) => {
+  const checkHere = favoriteList.find(fav => fav.id === item.id.videoId);
 
-const ChannelItem = ({ item }) => {
-  const handleAddOrRemove = () => {};
+  const handleAddOrRemove = async () => {
+    const realm = await getRealmApp();
+    const check = realm
+      .objects('Favorite')
+      .filtered('id ==$0', item.id.videoId);
+    if (check.length > 0) {
+      realm.write(() => {
+        realm.delete(
+          realm.objects('Favorite').filtered('id ==$0', item.id.videoId),
+        );
+      });
+    } else {
+      console.log('ADICIONAR AINDA NAO TINHA');
+      realm.write(() => {
+        const data = {
+          id: item.id.videoId,
+          title: item.snippet.channelTitle,
+          thumb: item.snippet.thumbnails.default.url,
+        };
+        realm.create('Favorite', data);
+      });
+    }
+  };
 
   return (
     <S.ChannelContainer>
@@ -55,8 +60,8 @@ const ChannelItem = ({ item }) => {
         <S.ChannelTitle>{item.snippet.channelTitle}</S.ChannelTitle>
       </S.ChannelLeft>
 
-      <S.FavoriteButton>
-        <StarIcon color="#000" />
+      <S.FavoriteButton onPress={handleAddOrRemove}>
+        <StarIcon color={checkHere ? '#000' : 'red'} />
       </S.FavoriteButton>
     </S.ChannelContainer>
   );
@@ -65,6 +70,17 @@ const ChannelItem = ({ item }) => {
 const Home: React.FC = () => {
   const [channels, setChannels] = useState();
   const [searchParam, setSearchParam] = useState('');
+  const [checkIsFavorite, setCheckIsFavorite] = useState();
+
+  const loadFavorites = useCallback(async () => {
+    const realm = await getRealmApp();
+    const checkFavorite = realm.objects('Favorite');
+
+    if (checkFavorite.length > 0) {
+      setCheckIsFavorite(checkFavorite);
+    } else {
+    }
+  }, []);
   const fetchData = param => {
     fetch(
       `https://www.googleapis.com/youtube/v3/search?part=snippet&maxResults=10&q=${param}&type=video&key=AIzaSyDYhkF6zlZDYLJvp89QnzjxBmmfQEoNMo8`,
@@ -75,13 +91,17 @@ const Home: React.FC = () => {
       });
   };
   useEffect(() => {
+    loadFavorites();
+  }, [loadFavorites]);
+
+  useEffect(() => {
     fetchData(searchParam);
-  }, []);
+  }, [searchParam]);
 
   const handleSearchChannel = () => {
     fetchData(searchParam);
   };
-  console.log('RETURN CHANEL==>', channels);
+
   return (
     <>
       <CustomHeader showFavorite />
@@ -101,7 +121,9 @@ const Home: React.FC = () => {
           showsVerticalScrollIndicator={false}
           data={channels}
           keyExtractor={item => String(item.id.videoId)}
-          renderItem={({ item }) => <ChannelItem item={item} />}
+          renderItem={({ item }) => (
+            <ChannelItem item={item} favoriteList={checkIsFavorite} />
+          )}
         />
       </S.Container>
     </>

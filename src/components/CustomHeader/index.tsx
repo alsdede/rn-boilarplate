@@ -15,14 +15,14 @@ type HeaderProps = {
 };
 
 const CustomHeader = ({ showFavorite = false }: HeaderProps) => {
-  const { signOut } = useAuth();
+  const { signOut, user } = useAuth();
   return (
     <S.Container>
       <S.Left>
         <S.WrapperIcon>
           <UserIcon color="#000" />
         </S.WrapperIcon>
-        <S.Username>André</S.Username>
+        <S.Username>{user.name}</S.Username>
       </S.Left>
       <S.Right>
         {showFavorite && (

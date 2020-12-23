@@ -52,7 +52,7 @@ const AuthProvider: React.FC = ({ children }) => {
 
     if (Object.keys(data).length === 1) {
       const token = true;
-      const user = data;
+      const user = data[0];
       setData({ token, user });
     } else {
       setError('Usuário inváido');
