@@ -8,18 +8,95 @@ import getRealmApp from '../../service/realm';
 import { useAuth } from '../../hooks/auth';
 // components
 import CustomHeader from '../../components/CustomHeader';
-import Logo from '../../components/Logo';
-import Button from '../../components/Button';
-import Modal from '../../components/Modal';
+import SearchIcon from '../../components/_icons/SearchIcon';
+import StarIcon from '../../components/_icons/StarIcon';
 
 // styles
 import * as S from './styles';
+import CloseIcon from '../../components/_icons/CloseIcon';
+
+const mock = [
+  {
+    id: 1,
+    title: 'Channel 1',
+  },
+  {
+    id: 2,
+    title: 'Channel 2',
+  },
+  {
+    id: 3,
+    title: 'Channel 3',
+  },
+  {
+    id: 4,
+    title: 'Channel 4',
+  },
+];
+
+const ChannelItem = ({ item }) => {
+  return (
+    <S.ChannelContainer>
+      <S.ChannelLeft>
+        <S.WrapperThumb>
+          <S.Thumb
+            resizeMode="cover"
+            source={{
+              uri: item.snippet.thumbnails.default.url,
+            }}
+            style={{
+              width: 40,
+              height: 40,
+            }}
+          />
+        </S.WrapperThumb>
+        <S.ChannelTitle>{item.snippet.channelTitle}</S.ChannelTitle>
+      </S.ChannelLeft>
+
+      <S.FavoriteButton>
+        <StarIcon color="#000" />
+      </S.FavoriteButton>
+    </S.ChannelContainer>
+  );
+};
 
 const Home: React.FC = () => {
+  const [channels, setChannels] = useState();
+  const [searchParam, setSearchParam] = useState('a');
+  const fetchData = () => {
+    fetch(
+      `https://www.googleapis.com/youtube/v3/search?part=snippet&maxResults=10&q=${searchParam}&type=video&key=AIzaSyDYhkF6zlZDYLJvp89QnzjxBmmfQEoNMo8`,
+    )
+      .then(res => res.json())
+      .then(data => {
+        setChannels(data.items);
+      });
+  };
+  useEffect(() => {
+    fetchData();
+  }, []);
+
+  console.log('RETURN CHANEL==>', channels);
   return (
-    <S.Container>
-      <CustomHeader />
-    </S.Container>
+    <>
+      <CustomHeader showFavorite />
+      <S.Container>
+        <S.SearchWrapper>
+          <S.SearchInput
+            placeholder="Channels"
+            placeholderTextColor="#AFAFAF"
+          />
+          <S.SearchButton>
+            <SearchIcon />
+          </S.SearchButton>
+        </S.SearchWrapper>
+        <FlatList
+          data={channels}
+          keyExtractor={item => String(item.id.videoId)}
+          renderItem={({ item }) => <ChannelItem item={item} />}
+        />
+      </S.Container>
+    </>
   );
 };
 

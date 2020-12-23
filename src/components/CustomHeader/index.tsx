@@ -11,12 +11,11 @@ import LogoutIcon from '../_icons/LogoutIcon';
 import * as S from './styles';
 
 type HeaderProps = {
-  showFavorite: boolean;
+  showFavorite?: boolean;
 };
 
 const CustomHeader = ({ showFavorite = false }: HeaderProps) => {
-  const { user, signIn } = useAuth();
-
+  const { signOut } = useAuth();
   return (
     <S.Container>
       <S.Left>
@@ -31,7 +30,7 @@ const CustomHeader = ({ showFavorite = false }: HeaderProps) => {
             <StarIcon />
           </TouchableOpacity>
         )}
-        <TouchableOpacity>
+        <TouchableOpacity onPress={signOut}>
           <LogoutIcon />
         </TouchableOpacity>
       </S.Right>

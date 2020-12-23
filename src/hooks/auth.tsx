@@ -20,7 +20,7 @@ interface AuthState {
 }
 
 interface SignInCredentials {
-  id: string;
+  id?: string;
   name: string;
   password: string;
 }
@@ -31,28 +31,31 @@ interface AuthContextData {
   loading: boolean;
   signIn(credentials: SignInCredentials): Promise<void>;
   signOut(): void;
+  error: string | null;
+  allUsers;
+  getAllUsers();
 }
 
 const AuthContext = createContext<AuthContextData>({} as AuthContextData);
 
 const AuthProvider: React.FC = ({ children }) => {
   const [data, setData] = useState<AuthState>({} as AuthState);
-  const [teste, setTeste] = useState([]);
+  const [allUsers, setAllUsers] = useState([]);
   const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    async function loadStoredData(): Promise<void> {}
-  }, []);
+  const [error, setError] = useState(null);
 
   const signIn = useCallback(async ({ name, password }) => {
     const realm = await getRealmApp();
     const data = realm
       .objects<User>('User')
       .filtered('name == $0 && password== $1', name, password);
+
     if (Object.keys(data).length === 1) {
       const token = true;
       const user = data;
       setData({ token, user });
+    } else {
+      setError('Usuário inváido');
     }
     console.log('SIGN DATA ===========>', data);
   }, []);
@@ -61,9 +64,23 @@ const AuthProvider: React.FC = ({ children }) => {
     setData({} as AuthState);
   }, []);
 
+  const getUsers = useCallback(async () => {
+    const realm = await getRealmApp();
+    const data = realm.objects<User>('User');
+    setAllUsers(data);
+  }, []);
   return (
     <AuthContext.Provider
-      value={{ user: data.user, signIn, signOut, loading, token: data.token }}
+      value={{
+        user: data.user,
+        signIn,
+        signOut,
+        loading,
+        token: data.token,
+        error,
+        allUsers,
+        getUsers,
+      }}
     >
       {children}
     </AuthContext.Provider>
