@@ -44,6 +44,7 @@ export const LinkText = styled.Text`
   color: #000;
 `;
 
+export const InputWrapper = styled.View``;
 export const Error = styled.Text`
   color: red;
   font-size: 10px;

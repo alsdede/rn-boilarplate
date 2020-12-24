@@ -5,6 +5,7 @@ import React, {
   useContext,
   useEffect,
 } from 'react';
+import { v4 as uuidv4 } from 'uuid';
 import { Results } from 'realm';
 import getRealmApp from '../service/realm';
 
@@ -32,8 +33,10 @@ interface AuthContextData {
   signIn(credentials: SignInCredentials): Promise<void>;
   signOut(): void;
   error: string | null;
+  setError(msg: string): void;
   allUsers;
-  getAllUsers();
+  getAllUsers(): void;
+  createUser(credentials: SignInCredentials): Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextData>({} as AuthContextData);
@@ -41,10 +44,14 @@ const AuthContext = createContext<AuthContextData>({} as AuthContextData);
 const AuthProvider: React.FC = ({ children }) => {
   const [data, setData] = useState<AuthState>({} as AuthState);
   const [allUsers, setAllUsers] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
 
+  useEffect(() => {
+    setError('');
+  }, []);
   const signIn = useCallback(async ({ name, password }) => {
+    setError('');
     const realm = await getRealmApp();
     const data = realm
       .objects<User>('User')
@@ -54,10 +61,11 @@ const AuthProvider: React.FC = ({ children }) => {
       const token = true;
       const user = data[0];
       setData({ token, user });
+      setError('');
     } else {
-      setError('Usuário inváido');
+      setError('Usuário inválido');
     }
-    console.log('SIGN DATA ===========>', data);
+    console.log('SIGN DATA ===========>', data[0]);
   }, []);
 
   const signOut = useCallback(async () => {
@@ -69,6 +77,36 @@ const AuthProvider: React.FC = ({ children }) => {
     const data = realm.objects<User>('User');
     setAllUsers(data);
   }, []);
+
+  const createUser = useCallback(async ({ name, password }) => {
+    setError('');
+    console.log('CRIAR========>');
+    if (name === '' || null) {
+      setError('Preencha o nome de usuário');
+      return;
+    }
+    if (password === '' || null) {
+      setError('Preencha a senha');
+      return;
+    }
+    const realm = await getRealmApp();
+    const data = realm.objects<User>('User').filtered('name == $0', name);
+
+    if (Object.keys(data).length > 0) {
+      setError('Usuário já cadastrado');
+    } else {
+      const data = {
+        id: uuidv4(),
+        name,
+        password,
+      };
+      realm.write(() => {
+        realm.create('User', data);
+      });
+    }
+    console.log('SIGN DATA ===========>', data[0]);
+  }, []);
+
   return (
     <AuthContext.Provider
       value={{
@@ -78,8 +116,10 @@ const AuthProvider: React.FC = ({ children }) => {
         loading,
         token: data.token,
         error,
+        setError,
         allUsers,
         getUsers,
+        createUser,
       }}
     >
       {children}

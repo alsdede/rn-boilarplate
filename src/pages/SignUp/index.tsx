@@ -20,6 +20,7 @@ const SignIn: React.FC = () => {
     )
       .then(res => res.json())
       .then(data => {
+        console.log(data.items);
         setData(data.items);
       });
   };

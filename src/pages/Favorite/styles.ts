@@ -55,13 +55,21 @@ export const ChannelTitle = styled.Text`
   color: #afafaf;
   font-size: 16px;
   font-family: 'Roboto-Medium';
-  max-width: 200px;
 `;
 export const FavoriteButton = styled.TouchableOpacity``;
-
-export const ErrorMessage = styled.Text`
-  margin-top: 20px;
-  color: red;
+export const BackButton = styled.TouchableOpacity`
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 69px;
+  justify-content: center;
+  align-items: center;
+  background-color: #000;
+`;
+export const BackText = styled.Text`
   font-size: 16px;
-  font-family: 'Roboto-Bold';
+  font-family: 'Roboto-Medium';
+
+  color: #fff;
 `;

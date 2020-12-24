@@ -1,8 +1,10 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { v4 as uuidv4 } from 'uuid';
+import { FlatList, Text } from 'react-native';
+
 // service
 import axios from 'axios';
-import { FlatList, Text } from 'react-native';
+import { API_KEY } from '../../constants/index';
 import getRealmApp from '../../service/realm';
 
 import { useAuth } from '../../hooks/auth';
@@ -10,10 +12,12 @@ import { useAuth } from '../../hooks/auth';
 import CustomHeader from '../../components/CustomHeader';
 import SearchIcon from '../../components/_icons/SearchIcon';
 import StarIcon from '../../components/_icons/StarIcon';
+import StarFullIcon from '../../components/_icons/StarFullIcon';
 
 // styles
 import * as S from './styles';
-import CloseIcon from '../../components/_icons/CloseIcon';
+
+type ChannelItemProps = {};
 
 const ChannelItem = ({ item, favoriteList }) => {
   const checkHere = favoriteList.find(fav => fav.id === item.id.videoId);
@@ -30,7 +34,6 @@ const ChannelItem = ({ item, favoriteList }) => {
         );
       });
     } else {
-      console.log('ADICIONAR AINDA NAO TINHA');
       realm.write(() => {
         const data = {
           id: item.id.videoId,
@@ -57,11 +60,17 @@ const ChannelItem = ({ item, favoriteList }) => {
             }}
           />
         </S.WrapperThumb>
-        <S.ChannelTitle>{item.snippet.channelTitle}</S.ChannelTitle>
+        <S.ChannelTitle numberOfLines={1}>
+          {item.snippet.channelTitle}
+        </S.ChannelTitle>
       </S.ChannelLeft>
 
       <S.FavoriteButton onPress={handleAddOrRemove}>
-        <StarIcon color={checkHere ? '#000' : 'red'} />
+        {checkHere ? (
+          <StarFullIcon color="#000000" />
+        ) : (
+          <StarIcon color="#000000" />
+        )}
       </S.FavoriteButton>
     </S.ChannelContainer>
   );
@@ -71,6 +80,8 @@ const Home: React.FC = () => {
   const [channels, setChannels] = useState();
   const [searchParam, setSearchParam] = useState('');
   const [checkIsFavorite, setCheckIsFavorite] = useState();
+  const [error, setError] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   const loadFavorites = useCallback(async () => {
     const realm = await getRealmApp();
@@ -78,21 +89,32 @@ const Home: React.FC = () => {
 
     if (checkFavorite.length > 0) {
       setCheckIsFavorite(checkFavorite);
-    } else {
     }
   }, []);
-  const fetchData = param => {
-    fetch(
-      `https://www.googleapis.com/youtube/v3/search?part=snippet&maxResults=10&q=${param}&type=video&key=AIzaSyDYhkF6zlZDYLJvp89QnzjxBmmfQEoNMo8`,
-    )
-      .then(res => res.json())
-      .then(data => {
-        setChannels(data.items);
-      });
+  const fetchData = (param: string) => {
+    setLoading(true);
+    setError(false);
+    try {
+      axios
+        .get(
+          `https://www.googleapis.com/youtube/v3/search?part=snippet&maxResults=10&q=${param}&type=video&key=AIzaSyDYhkF6zlZDYLJvp89QnzjxBmmfQEoNMo8`,
+        )
+        .then(res => res.json())
+        .then(data => {
+          setChannels(data.items);
+        })
+        .catch(error => {
+          console.log(error);
+        });
+    } catch (error) {
+      setError(true);
+      console.log(error);
+    }
+    setLoading(false);
   };
   useEffect(() => {
     loadFavorites();
-  }, [loadFavorites]);
+  }, []);
 
   useEffect(() => {
     fetchData(searchParam);
@@ -117,14 +139,20 @@ const Home: React.FC = () => {
             <SearchIcon />
           </S.SearchButton>
         </S.SearchWrapper>
-        <FlatList
-          showsVerticalScrollIndicator={false}
-          data={channels}
-          keyExtractor={item => String(item.id.videoId)}
-          renderItem={({ item }) => (
-            <ChannelItem item={item} favoriteList={checkIsFavorite} />
-          )}
-        />
+        {channels && !error ? (
+          <FlatList
+            refreshing={loading}
+            onRefresh={() => fetchData(searchParam)}
+            showsVerticalScrollIndicator={false}
+            data={channels}
+            keyExtractor={item => String(item.id.videoId)}
+            renderItem={({ item }) => (
+              <ChannelItem item={item} favoriteList={checkIsFavorite} />
+            )}
+          />
+        ) : (
+          <S.ErrorMessage>Erro ao carregar lista</S.ErrorMessage>
+        )}
       </S.Container>
     </>
   );

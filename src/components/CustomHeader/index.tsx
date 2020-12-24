@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-
+import { useNavigation } from '@react-navigation/native';
 // hooks
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import { useAuth } from '../../hooks/auth';
@@ -16,6 +16,8 @@ type HeaderProps = {
 
 const CustomHeader = ({ showFavorite = false }: HeaderProps) => {
   const { signOut, user } = useAuth();
+  const navigation = useNavigation();
+
   return (
     <S.Container>
       <S.Left>
@@ -26,7 +28,10 @@ const CustomHeader = ({ showFavorite = false }: HeaderProps) => {
       </S.Left>
       <S.Right>
         {showFavorite && (
-          <TouchableOpacity>
+          <TouchableOpacity
+            onPress={() => navigation.navigate('Favorite')}
+            style={{ marginRight: 21 }}
+          >
             <StarIcon />
           </TouchableOpacity>
         )}

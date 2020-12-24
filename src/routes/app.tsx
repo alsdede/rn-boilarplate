@@ -1,7 +1,11 @@
 import React from 'react';
-import { createStackNavigator } from '@react-navigation/stack';
+import {
+  CardStyleInterpolators,
+  createStackNavigator,
+} from '@react-navigation/stack';
 
 import Home from '../pages/Home';
+import Favorite from '../pages/Favorite';
 
 const App = createStackNavigator();
 
@@ -10,9 +14,11 @@ const AppRoutes: React.FC = () => (
     screenOptions={{
       headerShown: false,
       cardStyle: { backgroundColor: '#fff' },
+      cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS,
     }}
   >
     <App.Screen name="Home" component={Home} />
+    <App.Screen name="Favorite" component={Favorite} />
   </App.Navigator>
 );
 
