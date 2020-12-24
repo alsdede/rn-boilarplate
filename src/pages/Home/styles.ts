@@ -65,3 +65,24 @@ export const ErrorMessage = styled.Text`
   font-size: 16px;
   font-family: 'Roboto-Bold';
 `;
+export const WrapperPaginationButton = styled.View`
+  flex-direction: row;
+  width: 100%;
+  height: 60px;
+  justify-content: center;
+`;
+export const PaginationButton = styled.TouchableOpacity`
+  background: #000;
+  align-items: center;
+  justify-content: center;
+  height: 60px;
+  border-radius: 4px;
+  padding: 2px;
+  min-width: 80px;
+`;
+
+export const PaginationText = styled.Text`
+  color: #fff;
+  font-size: 16px;
+  font-family: 'Roboto-Medium';
+`;

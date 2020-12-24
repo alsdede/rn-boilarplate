@@ -1,4 +1,5 @@
 import React, { useCallback, useEffect, useState } from 'react';
+import { useQuery } from 'react-query';
 import { v4 as uuidv4 } from 'uuid';
 import { FlatList, Text } from 'react-native';
 
@@ -19,8 +20,21 @@ import * as S from './styles';
 
 type ChannelItemProps = {};
 
+const RenderFooterPagination = ({ handlePrevious, handleNext }) => {
+  return (
+    <S.WrapperPaginationButton>
+      <S.PaginationButton onPress={handlePrevious}>
+        <S.PaginationText>Voltar</S.PaginationText>
+      </S.PaginationButton>
+      <S.PaginationButton onPress={handleNext}>
+        <S.PaginationText>Próxima</S.PaginationText>
+      </S.PaginationButton>
+    </S.WrapperPaginationButton>
+  );
+};
+
 const ChannelItem = ({ item, favoriteList }) => {
-  const checkHere = favoriteList.find(fav => fav.id === item.id.videoId);
+  const checkHere = favoriteList?.find(fav => fav.id === item.id.videoId);
 
   const handleAddOrRemove = async () => {
     const realm = await getRealmApp();
@@ -82,6 +96,10 @@ const Home: React.FC = () => {
   const [checkIsFavorite, setCheckIsFavorite] = useState();
   const [error, setError] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [nextPageToken, setNextPageToken] = useState();
+  const [previousPageToken, setPreviousPageToken] = useState();
+  const [totalPages, setTotalPages] = useState<number>();
+  const KEY = 'AIzaSyDYhkF6zlZDYLJvp89QnzjxBmmfQEoNMo8';
 
   const loadFavorites = useCallback(async () => {
     const realm = await getRealmApp();
@@ -91,34 +109,50 @@ const Home: React.FC = () => {
       setCheckIsFavorite(checkFavorite);
     }
   }, []);
-  const fetchData = (param: string) => {
+  const fetchData = async (searchParam, pageToken) => {
     setLoading(true);
     setError(false);
     try {
-      axios
-        .get(
-          `https://www.googleapis.com/youtube/v3/search?part=snippet&maxResults=10&q=${param}&type=video&key=AIzaSyDYhkF6zlZDYLJvp89QnzjxBmmfQEoNMo8`,
-        )
-        .then(res => res.json())
-        .then(data => {
-          setChannels(data.items);
-        })
-        .catch(error => {
-          console.log(error);
-        });
-    } catch (error) {
+      const { data } = await axios.get(
+        'https://www.googleapis.com/youtube/v3/search',
+        {
+          params: {
+            part: 'snippet',
+            q: searchParam,
+            key: KEY,
+            maxResults: 10,
+            type: 'channel',
+            pageToken,
+          },
+        },
+      );
+
+      console.log('CHEGUEI AQUI');
+      if (data) {
+        const totalPages = Math.ceil(
+          data.pageInfo.totalResults / data.pageInfo.resultsPerPage,
+        );
+        setChannels(data.items);
+        setTotalPages(totalPages);
+        setNextPageToken(data.nextPageToken);
+        setPreviousPageToken(data.prevPageToken);
+        setLoading(false);
+      }
+    } catch (err) {
       setError(true);
-      console.log(error);
+      console.log(err);
     }
     setLoading(false);
   };
+
   useEffect(() => {
     loadFavorites();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
     fetchData(searchParam);
-  }, [searchParam]);
+  }, []);
 
   const handleSearchChannel = () => {
     fetchData(searchParam);
@@ -141,8 +175,6 @@ const Home: React.FC = () => {
         </S.SearchWrapper>
         {channels && !error ? (
           <FlatList
-            refreshing={loading}
-            onRefresh={() => fetchData(searchParam)}
             showsVerticalScrollIndicator={false}
             data={channels}
             keyExtractor={item => String(item.id.videoId)}
@@ -153,6 +185,10 @@ const Home: React.FC = () => {
         ) : (
           <S.ErrorMessage>Erro ao carregar lista</S.ErrorMessage>
         )}
+        <RenderFooterPagination
+          handleNext={() => fetchData(searchParam, nextPageToken)}
+          handlePrevious={() => fetchData(searchParam, previousPageToken)}
+        />
       </S.Container>
     </>
   );

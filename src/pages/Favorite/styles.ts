@@ -73,3 +73,16 @@ export const BackText = styled.Text`
 
   color: #fff;
 `;
+
+export const PaginationButton = styled.TouchableOpacity`
+  background: #000;
+
+  height: 60px;
+  border-radius: 4px;
+`;
+export const ErrorMessage = styled.Text`
+  margin-top: 20px;
+  color: red;
+  font-size: 16px;
+  font-family: 'Roboto-Bold';
+`;

@@ -61,6 +61,7 @@ type FavoriteProp = {
   title: string;
   thumb: string;
 };
+
 const Favorite: React.FC = () => {
   const [favoriteList, setFavoriteList] = useState();
   const [loading, setLoading] = useState(false);
@@ -85,14 +86,18 @@ const Favorite: React.FC = () => {
     <>
       <CustomHeader />
       <S.Container>
-        <FlatList
-          refreshing={loading}
-          onRefresh={() => loadFavorites()}
-          showsVerticalScrollIndicator={false}
-          data={favoriteList}
-          keyExtractor={item => item.id}
-          renderItem={({ item }) => <ChannelItem favoriteList={item} />}
-        />
+        {favoriteList ? (
+          <FlatList
+            refreshing={loading}
+            onRefresh={() => loadFavorites()}
+            showsVerticalScrollIndicator={false}
+            data={favoriteList}
+            keyExtractor={item => item.id}
+            renderItem={({ item }) => <ChannelItem favoriteList={item} />}
+          />
+        ) : (
+          <S.ErrorMessage>Você não tem nenhum canal favorito</S.ErrorMessage>
+        )}
       </S.Container>
       <S.BackButton onPress={() => navigation.goBack()}>
         <S.BackText>back</S.BackText>
