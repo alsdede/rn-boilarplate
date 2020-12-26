@@ -1,13 +1,11 @@
 import 'react-native-gesture-handler';
 import 'react-native-get-random-values';
 import React from 'react';
-import { View, StatusBar } from 'react-native';
+import { StatusBar } from 'react-native';
 import { ThemeProvider } from 'styled-components';
-import { NavigationContainer } from '@react-navigation/native';
 
 // hooks
-// import AppProvider from './hooks'
-import { AuthProvider } from './hooks/auth';
+import AppProvider from './hooks';
 
 import Routes from './routes';
 
@@ -17,10 +15,10 @@ import theme from './styles/theme';
 const App: React.FC = () => (
   <>
     <ThemeProvider theme={theme}>
-      <AuthProvider>
+      <AppProvider>
         <StatusBar barStyle="light-content" />
         <Routes />
-      </AuthProvider>
+      </AppProvider>
     </ThemeProvider>
   </>
 );

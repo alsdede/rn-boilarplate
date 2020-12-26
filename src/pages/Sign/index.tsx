@@ -11,21 +11,22 @@ import {
 } from 'react-native';
 import getRealmApp from '../../service/realm';
 
+// hooks
+import { useModal } from '../../hooks/modal';
 // components
 import Logo from '../../components/Logo';
 
 import Button from '../../components/Button';
-import ModalSignIn from '../../components/ModalSignIn';
+import Modal from '../../components/Modal';
 
 // styles
 import * as S from './styles';
-import ModalSignUp from '../../components/ModalSignUp';
 
 const Sign: React.FC = () => {
   const [users, setUsers] = useState([]);
   const [modalVisibleSignIn, setModalVisibleSignIn] = useState(false);
   const [modalVisibleSignUp, setModalVisibleSignUp] = useState(false);
-
+  const { handleOpenModal, handleShowSignIn, handleShowSignUp } = useModal();
   async function loadRepositories() {
     const realm = await getRealmApp();
 
@@ -37,20 +38,6 @@ const Sign: React.FC = () => {
     loadRepositories();
     // signIn({ name: 'MALU', password: '123456' });
   }, []);
-
-  const handleOpenModalSignIn = () => {
-    setModalVisibleSignIn(!modalVisibleSignIn);
-  };
-  const handleOpenModalSignUp = () => {
-    setModalVisibleSignUp(!modalVisibleSignUp);
-  };
-
-  const handleButtonPressSignIn = () => {
-    console.log('button press');
-  };
-  const handleLinkPressSignIn = () => {
-    console.log('link press');
-  };
 
   return (
     <>
@@ -69,28 +56,34 @@ const Sign: React.FC = () => {
               <S.Title>welcome to the jungle</S.Title>
             </View>
             <View>
-              <Button primary onPress={handleOpenModalSignIn}>
+              <Button
+                primary
+                onPress={() => {
+                  handleOpenModal();
+                  handleShowSignIn();
+                }}
+              >
                 Sign in
               </Button>
-              <Button primary onPress={handleOpenModalSignUp}>
+              <Button
+                primary
+                onPress={() => {
+                  handleShowSignUp();
+                  handleOpenModal();
+                }}
+              >
                 Sign up
               </Button>
             </View>
-            <ModalSignIn
-              modalVisible={modalVisibleSignIn}
-              handleOpenModal={handleOpenModalSignIn}
-            />
-            <ModalSignUp
-              modalVisible={modalVisibleSignUp}
-              handleOpenModal={handleOpenModalSignUp}
-            />
-            <FlatList
+            <Modal />
+
+            {/* <FlatList
               data={users}
               keyExtractor={item => item.id}
               renderItem={({ item }) => (
                 <Text style={{ color: 'red' }}>{item.name}</Text>
               )}
-            />
+            /> */}
           </S.Container>
         </ScrollView>
       </KeyboardAvoidingView>

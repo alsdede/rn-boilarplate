@@ -68,17 +68,18 @@ export const ErrorMessage = styled.Text`
 export const WrapperPaginationButton = styled.View`
   flex-direction: row;
   width: 100%;
-  height: 60px;
+  height: 40px;
   justify-content: center;
 `;
 export const PaginationButton = styled.TouchableOpacity`
   background: #000;
   align-items: center;
   justify-content: center;
-  height: 60px;
-  border-radius: 4px;
+  height: 40px;
+  border-radius: 20px;
   padding: 2px;
   min-width: 80px;
+  margin-left: 5px;
 `;
 
 export const PaginationText = styled.Text`

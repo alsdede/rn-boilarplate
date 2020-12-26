@@ -18,8 +18,6 @@ import StarFullIcon from '../../components/_icons/StarFullIcon';
 // styles
 import * as S from './styles';
 
-type ChannelItemProps = {};
-
 const RenderFooterPagination = ({ handlePrevious, handleNext }) => {
   return (
     <S.WrapperPaginationButton>
