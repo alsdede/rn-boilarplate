@@ -6,6 +6,7 @@ import React, {
   useEffect,
 } from 'react';
 import { v4 as uuidv4 } from 'uuid';
+import { showMessage, hideMessage } from 'react-native-flash-message';
 import { Results } from 'realm';
 import getRealmApp from '../service/realm';
 
@@ -80,7 +81,7 @@ const AuthProvider: React.FC = ({ children }) => {
 
   const createUser = useCallback(async ({ name, password }) => {
     setError('');
-    console.log('CRIAR========>');
+
     if (name === '' || null) {
       setError('Preencha o nome de usuário');
       return;
@@ -103,8 +104,12 @@ const AuthProvider: React.FC = ({ children }) => {
       realm.write(() => {
         realm.create('User', data);
       });
+      showMessage({
+        message: 'Usuário cadastrado com sucesso',
+        description: `[User:${name}] [Password:${password}]`,
+        type: 'success',
+      });
     }
-    console.log('SIGN DATA ===========>', data[0]);
   }, []);
 
   return (

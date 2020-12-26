@@ -26,6 +26,7 @@
     "eslint-plugin-react-hooks": "4",
     "react": "16.13.1",
     "react-native": "0.63.3",
+    "react-native-flash-message": "^0.1.18",
     "react-native-gesture-handler": "^1.9.0",
     "react-native-get-random-values": "^1.5.0",
     "react-native-reanimated": "^1.13.2",

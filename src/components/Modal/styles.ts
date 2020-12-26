@@ -7,7 +7,6 @@ export const Wrapper = styled.View.attrs({
   background-color: #fff;
   flex: 0.6;
   margin-top: auto;
-
   padding: 20px;
 `;
 

@@ -3,7 +3,7 @@ import 'react-native-get-random-values';
 import React from 'react';
 import { StatusBar } from 'react-native';
 import { ThemeProvider } from 'styled-components';
-
+import FlashMessage from 'react-native-flash-message';
 // hooks
 import AppProvider from './hooks';
 
@@ -18,6 +18,7 @@ const App: React.FC = () => (
       <AppProvider>
         <StatusBar barStyle="light-content" />
         <Routes />
+        <FlashMessage floating />
       </AppProvider>
     </ThemeProvider>
   </>
