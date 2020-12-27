@@ -19,15 +19,16 @@ const ChannelItem = ({ favoriteList }) => {
     const realm = await getRealmApp();
     const check = realm
       .objects('Favorite')
-      .filtered('id ==$0', favoriteList.id);
+      .filtered('id == $0', favoriteList.id);
+
     if (check.length > 0) {
       realm.write(() => {
         realm.delete(
-          realm.objects('Favorite').filtered('id ==$0', favoriteList.id),
+          realm.objects('Favorite').filtered('id == $0', favoriteList.id),
         );
       });
     } else {
-      console.log('ERRO AO REMOVER FAVORITO');
+      console.log('Error remove favorite');
     }
   };
 
@@ -75,7 +76,7 @@ const Favorite: React.FC = () => {
     if (checkFavorite.length > 0) {
       setFavoriteList(checkFavorite);
     } else {
-      console.log('ERRO AO CARREGAR LISTA DE FAVORITOS');
+      console.log('error loading favorite');
     }
     setLoading(false);
   }

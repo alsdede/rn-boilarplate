@@ -1,20 +1,22 @@
 <h1 align="center">
-    ZEBU Challenger  | Pizzaria Page
+    Riachuelo
 </h1>
 
 <h4 align="center">
-  Test Front-end to ZEBU.
+  Test to Riachuelo
 </h4>
 <p align="center">
-  <img alt="login" src=".github/sizepage.png">
+  <img alt="login" src=".github/login.png">
+  <img alt="modal1" src=".github/modal1.png">
+  <img alt="modal2" src=".github/modal2.png">
 
 </p>
 <p align="center">
-  <img alt="login" src=".github/toppingspage.png">
+  <img alt="home" src=".github/home.png">
 
 </p>
 <p align="center">
-  <img alt="login" src=".github/checkoutpage.png">
+  <img alt="favorite" src=".github/favorite.png">
 
 </p>
 <br>
@@ -61,16 +63,17 @@ No item 6, deve-se consultar os itens gravados no RealmDB e listar exibindo os n
 - [X] 5. Search and Validate input Fields and promise
 - [X] 6. Review Realm logic.
 - [X] 7.Check Layout
-- [] 8.Convert favorite logic to context useFavorite
-- [] 9. Add Yup for validation.
-- [] 10. Tests with Jest and react-testlibrary
+- [X] 8.Add Tooltip message
+- [] 9.Convert favorite logic to context useFavorite
+- [] 10. Add Yup for validation.
+- [] 11. Tests with Jest and react-testlibrary
 
 
 
 ## Next
-- [ ] Review Code and refactor code.
-- [ ] Unit Tests Jest
-- [ ] Make Responsive both S.O
+- [ ] Review Code center styles.
+- [ ] Unit Tests with Jest
+- [ ] Review both S.O
 - [ ] Review Back-end
 
 

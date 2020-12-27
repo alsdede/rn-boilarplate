@@ -64,7 +64,7 @@ const AuthProvider: React.FC = ({ children }) => {
       setData({ token, user });
       setError('');
     } else {
-      setError('Usuário inválido');
+      setError('User does not exist');
     }
     console.log('SIGN DATA ===========>', data[0]);
   }, []);
@@ -94,7 +94,7 @@ const AuthProvider: React.FC = ({ children }) => {
     const data = realm.objects<User>('User').filtered('name == $0', name);
 
     if (Object.keys(data).length > 0) {
-      setError('Usuário já cadastrado');
+      setError('User already exists');
     } else {
       const data = {
         id: uuidv4(),
@@ -105,7 +105,7 @@ const AuthProvider: React.FC = ({ children }) => {
         realm.create('User', data);
       });
       showMessage({
-        message: 'Usuário cadastrado com sucesso',
+        message: 'User successfully registered',
         description: `[User:${name}] [Password:${password}]`,
         type: 'success',
       });

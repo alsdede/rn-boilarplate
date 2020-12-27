@@ -1,14 +1,11 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import { useQuery } from 'react-query';
-import { v4 as uuidv4 } from 'uuid';
-import { FlatList, Text } from 'react-native';
+import { FlatList } from 'react-native';
 
 // service
 import axios from 'axios';
-import { API_KEY } from '../../constants/index';
+import { useNavigation } from '@react-navigation/native';
 import getRealmApp from '../../service/realm';
 
-import { useAuth } from '../../hooks/auth';
 // components
 import CustomHeader from '../../components/CustomHeader';
 import SearchIcon from '../../components/_icons/SearchIcon';
@@ -32,30 +29,43 @@ const RenderFooterPagination = ({ handlePrevious, handleNext }) => {
 };
 
 const ChannelItem = ({ item, favoriteList }) => {
-  const checkHere = favoriteList?.find(fav => fav.id === item.id.videoId);
+  const [checkHere, setCheckHere] = useState(false);
+  // useEffect(() => {
+  //   setCheckHere();
+  // }, [favoriteList, item]);
 
-  const handleAddOrRemove = async () => {
+  const handleAddOrRemove = useCallback(async () => {
     const realm = await getRealmApp();
+
     const check = realm
       .objects('Favorite')
-      .filtered('id ==$0', item.id.videoId);
-    if (check.length > 0) {
+      .filtered('id == $0', item.snippet.channelId);
+
+    if (Object.keys(check).length > 0) {
       realm.write(() => {
         realm.delete(
-          realm.objects('Favorite').filtered('id ==$0', item.id.videoId),
+          realm
+            .objects('Favorite')
+            .filtered('id == $0', item.snippet.channelId),
         );
       });
+      setCheckHere(false);
     } else {
       realm.write(() => {
         const data = {
-          id: item.id.videoId,
+          id: item.snippet.channelId,
           title: item.snippet.channelTitle,
           thumb: item.snippet.thumbnails.default.url,
         };
         realm.create('Favorite', data);
       });
+      setCheckHere(true);
     }
-  };
+  }, [
+    item.snippet.channelId,
+    item.snippet.thumbnails.default.url,
+    item.snippet.channelTitle,
+  ]);
 
   return (
     <S.ChannelContainer>
@@ -91,23 +101,24 @@ const ChannelItem = ({ item, favoriteList }) => {
 const Home: React.FC = () => {
   const [channels, setChannels] = useState();
   const [searchParam, setSearchParam] = useState('');
-  const [checkIsFavorite, setCheckIsFavorite] = useState();
+  const [favoriteList, setFavoriteList] = useState();
   const [error, setError] = useState(false);
   const [loading, setLoading] = useState(false);
   const [nextPageToken, setNextPageToken] = useState();
   const [previousPageToken, setPreviousPageToken] = useState();
   const [totalPages, setTotalPages] = useState<number>();
   const KEY = 'AIzaSyDYhkF6zlZDYLJvp89QnzjxBmmfQEoNMo8';
+  const navigation = useNavigation();
 
   const loadFavorites = useCallback(async () => {
     const realm = await getRealmApp();
     const checkFavorite = realm.objects('Favorite');
 
     if (checkFavorite.length > 0) {
-      setCheckIsFavorite(checkFavorite);
+      setFavoriteList(checkFavorite);
     }
   }, []);
-  const fetchData = async (searchParam, pageToken) => {
+  const fetchData = useCallback(async (searchParam, pageToken) => {
     setLoading(true);
     setError(false);
     try {
@@ -125,7 +136,6 @@ const Home: React.FC = () => {
         },
       );
 
-      console.log('CHEGUEI AQUI');
       if (data) {
         const totalPages = Math.ceil(
           data.pageInfo.totalResults / data.pageInfo.resultsPerPage,
@@ -138,10 +148,9 @@ const Home: React.FC = () => {
       }
     } catch (err) {
       setError(true);
-      console.log(err);
     }
     setLoading(false);
-  };
+  }, []);
 
   useEffect(() => {
     loadFavorites();
@@ -149,8 +158,10 @@ const Home: React.FC = () => {
   }, []);
 
   useEffect(() => {
-    fetchData(searchParam);
-  }, []);
+    navigation.addListener('focus', () => {
+      fetchData(searchParam);
+    });
+  }, [navigation]);
 
   const handleSearchChannel = () => {
     fetchData(searchParam);
@@ -171,17 +182,19 @@ const Home: React.FC = () => {
             <SearchIcon />
           </S.SearchButton>
         </S.SearchWrapper>
-        {channels && !error ? (
+        {channels ? (
           <FlatList
+            refreshing={loading}
+            onRefresh={() => fetchData(searchParam)}
             showsVerticalScrollIndicator={false}
             data={channels}
-            keyExtractor={item => String(item.id.videoId)}
+            keyExtractor={item => String(item.snippet.channelId)}
             renderItem={({ item }) => (
-              <ChannelItem item={item} favoriteList={checkIsFavorite} />
+              <ChannelItem item={item} favoriteList={favoriteList} />
             )}
           />
         ) : (
-          <S.ErrorMessage>Erro ao carregar lista</S.ErrorMessage>
+          <S.ErrorMessage>Error loading list</S.ErrorMessage>
         )}
         <RenderFooterPagination
           handleNext={() => fetchData(searchParam, nextPageToken)}
