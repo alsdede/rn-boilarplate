@@ -13,12 +13,9 @@
 </p>
 <p align="center">
   <img alt="home" src=".github/home.jpeg" width="250px">
-
-</p>
-<p align="center">
   <img alt="favorite" src=".github/favorite.jpeg" width="250px">
-
 </p>
+
 <br>
 
 ## The challenge:
