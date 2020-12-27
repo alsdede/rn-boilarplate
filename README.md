@@ -5,6 +5,8 @@
 <h4 align="center">
   Test to Riachuelo
 </h4>
+<p>Video demo: https://github.com/alsdede/rn-boilarplate/blob/master/.github/video.mp4</p>
+<br>
 <p align="center">
   <img alt="login" src=".github/login.jpeg" width="250px">
   <img alt="modal1" src=".github/modal1.jpeg" width="250px">
@@ -71,7 +73,7 @@ No item 6, deve-se consultar os itens gravados no RealmDB e listar exibindo os n
 ## Next
 - [ ] Review Code center styles.
 - [ ] Unit Tests with Jest
-- [ ] Review both S.O
+- [ ] Review both S.O most IOS
 - [ ] Review Back-end
 
 
