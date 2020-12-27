@@ -6,17 +6,17 @@
   Test to Riachuelo
 </h4>
 <p align="center">
-  <img alt="login" src=".github/login.jpeg">
-  <img alt="modal1" src=".github/modal1.jpeg">
-  <img alt="modal2" src=".github/modal2.jpeg">
+  <img alt="login" src=".github/login.jpeg" width="250px">
+  <img alt="modal1" src=".github/modal1.jpeg" width="250px">
+  <img alt="modal2" src=".github/modal2.jpeg" width="250px">
 
 </p>
 <p align="center">
-  <img alt="home" src=".github/home.jpeg">
+  <img alt="home" src=".github/home.jpeg" width="250px">
 
 </p>
 <p align="center">
-  <img alt="favorite" src=".github/favorite.jpeg">
+  <img alt="favorite" src=".github/favorite.jpeg" width="250px">
 
 </p>
 <br>
