@@ -6,29 +6,30 @@
   Test to Riachuelo
 </h4>
 <p align="center">
-  <img alt="login" src=".github/login.png">
-  <img alt="modal1" src=".github/modal1.png">
-  <img alt="modal2" src=".github/modal2.png">
+  <img alt="login" src=".github/login.jpeg">
+  <img alt="modal1" src=".github/modal1.jpeg">
+  <img alt="modal2" src=".github/modal2.jpeg">
 
 </p>
 <p align="center">
-  <img alt="home" src=".github/home.png">
+  <img alt="home" src=".github/home.jpeg">
 
 </p>
 <p align="center">
-  <img alt="favorite" src=".github/favorite.png">
+  <img alt="favorite" src=".github/favorite.jpeg">
 
 </p>
 <br>
-<p>
-The challenge:
 
-1.Cadastro de usuário;
-2.Login;
-3.Logout;
-4.Pesquisa de canais do youtube;
-5.Salvar canais nos favoritos;
-6.Listar canais favoritados.
+## The challenge:
+
+1. Cadastro de usuário;
+2. Login;
+3. Logout;
+4. Pesquisa de canais do youtube;
+5. Salvar canais nos favoritos;
+6. Listar canais favoritados.
+<p>
 Os itens 3, 4, 5 e 6 só podem estar acessíveis se o usuário estiver logado.
 Nos itens 1 e 2 deve-se persistir e validar o usuário cadastrado no RealmDB (nome de usuario e senha são suficientes);
 No item 4, a pesquisa deve utilizar a API de Search do YouTube (https://developers.google.com/youtube/v3/docs/search/list?hl=pt-br). Essa pesquisa deve listar no máximo 10 itens por vez e ter botões para avançar e voltar nas páginas.
