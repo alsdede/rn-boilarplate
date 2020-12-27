@@ -68,7 +68,12 @@ const SignUp: React.FC = () => {
 const SignIn: React.FC = () => {
   const [userName, setUserName] = useState('');
   const [userPassword, setUserPassword] = useState('');
-  const { handleShowSignUp, modalVisible, showSignIn } = useModal();
+  const {
+    handleShowSignUp,
+    modalVisible,
+    showSignIn,
+    handleOpenModal,
+  } = useModal();
   const { signIn, error, setError } = useAuth();
   console.log('username', userName);
   console.log('password', userPassword);
@@ -80,6 +85,7 @@ const SignIn: React.FC = () => {
 
   const handleButtonPress = () => {
     signIn({ name: userName, password: userPassword });
+    handleOpenModal();
   };
 
   return (

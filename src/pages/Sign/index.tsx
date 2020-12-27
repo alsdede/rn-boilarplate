@@ -1,14 +1,7 @@
 import React, { useEffect, useState } from 'react';
 
 // service
-import {
-  FlatList,
-  Text,
-  View,
-  ScrollView,
-  KeyboardAvoidingView,
-  Platform,
-} from 'react-native';
+import { View, ScrollView, KeyboardAvoidingView, Platform } from 'react-native';
 import getRealmApp from '../../service/realm';
 
 // hooks
@@ -24,8 +17,6 @@ import * as S from './styles';
 
 const Sign: React.FC = () => {
   const [users, setUsers] = useState([]);
-  const [modalVisibleSignIn, setModalVisibleSignIn] = useState(false);
-  const [modalVisibleSignUp, setModalVisibleSignUp] = useState(false);
   const { handleOpenModal, handleShowSignIn, handleShowSignUp } = useModal();
   async function loadRepositories() {
     const realm = await getRealmApp();
